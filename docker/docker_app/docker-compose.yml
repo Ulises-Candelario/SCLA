@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: app_scla
+    ports:
+      - "3000:3000"  # El frontend y backend se servirán desde este puerto
+    networks:
+      - scla-network
+    volumes:
+      - .:/usr/src/app
+
+networks:
+  scla-network:
+    external: true
