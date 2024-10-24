@@ -59,10 +59,104 @@ app.get('/register_docente', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/register_docente.html'));
 });
 
+app.get('/mis_reservas_docente', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/mis_reservas_docente.html'));
+});
+
+// Ruta para obtener los cambios de salón del docente
+// Sirve la página HTML de cambios de salón
+app.get('/mis_reservas_docente', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/mis_reservas_docente.html'));
+});
+
+// Obtiene los cambios de salón del docente (API)
+app.get('/api/mis_reservas/docente', (req, res) => {
+  const docente_id = req.session.userId;
+  const tipo_usuario = req.session.userRole;
+
+  if (!docente_id || tipo_usuario !== 'docente') {
+    return res.status(401).json({ error: 'Usuario no autenticado o no es docente' });
+  }
+
+  const query = `
+    SELECT r.id_cambio, r.aula_nueva, r.hora_inicio, r.hora_fin, r.fecha_cambio, r.cancelada
+    FROM reservacion_cambio_salon r
+    WHERE r.docente_id = ?
+  `;
+
+  db.query(query, [docente_id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener los cambios de salón:', err);
+      return res.status(500).json({ error: 'Error al obtener los cambios de salón' });
+    }
+
+    res.json(results); // Envía los resultados como JSON
+  });
+});
+
 // Ruta para servir el archivo de registro
 app.get('/mis_reservas', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/mis_reservas.html'));
 });
+
+// Ruta para obtener las reservas del usuario (estudiante o docente)
+app.get('/mis_reservas/datos', (req, res) => {
+  const usuario_id = req.session.userId;  // Asegúrate de que la sesión tiene usuarioId
+  const tipo_usuario = req.session.userRole; // Corregido 'tipoUsuario' por 'userRole'
+
+  if (!usuario_id || !tipo_usuario) {
+    return res.status(401).json({ error: 'Usuario no autenticado' });
+  }
+
+  let query = '';
+  if (tipo_usuario === 'estudiante') {
+    query = `
+      SELECT r.id_reserva, a.tipo, a.nombre_numero, a.ubicacion, r.hora_inicio, r.hora_fin, r.cancelada AS estado, r.fecha_reserva
+      FROM reservacion_estudiante r
+      JOIN aulas_laboratorios a ON r.aula_id = a.id_lugar
+      WHERE r.estudiante_id = ?
+    `;
+  }   else if (tipo_usuario === 'docente') {
+    query = `
+      SELECT r.id_cambio, a.tipo, a.nombre_numero, a.ubicacion, r.hora_inicio, r.hora_fin, r.cancelada, r.fecha_cambio AS fecha_reserva
+      FROM reservacion_cambio_salon r
+      JOIN aulas_laboratorios a ON r.aula_nueva = a.id_lugar
+      WHERE r.docente_id = ?
+    `;
+  }
+
+  db.query(query, [usuario_id], (err, results) => {
+    if (err) {
+      console.error('Error al obtener las reservas:', err);
+      return res.status(500).json({ error: 'Error al obtener las reservas' });
+    }
+
+    // Enviar los resultados como JSON
+    res.json(results);
+  });
+});
+
+// Ruta para cancelar una reserva
+app.post('/cancelar_reserva/:idReserva', (req, res) => {
+  const idReserva = req.params.idReserva;
+  const tipo_usuario = req.session.userRole;  // Asegúrate de usar 'userRole' aquí
+
+  let query = '';
+  if (tipo_usuario === 'estudiante') {
+    query = 'UPDATE reservacion_estudiante SET cancelada = 1 WHERE id_reserva = ?';
+  } else if (tipo_usuario === 'docente') {
+    query = 'UPDATE reservacion_cambio_salon SET cancelada = 1 WHERE id_cambio = ?';
+  }
+
+  db.query(query, [idReserva], (err, result) => {
+    if (err) {
+      console.error('Error al cancelar la reserva:', err);
+      return res.status(500).send('Error al cancelar la reserva');
+    }
+    res.send('Reserva cancelada con éxito');
+  });
+});
+
 
 // Ruta de registro de docentes (POST /register_docente)
 app.post('/register_docente', async (req, res) => {
@@ -333,16 +427,41 @@ app.get('/disponibilidad/:aula_id/:fecha_reserva/:hora_inicio/:hora_fin', (req, 
 
 
 
-// Ruta de reserva para docentes (POST /reserva/docente)
 app.post('/reserva/docente', (req, res) => {
-  const { docente_id, aula_nueva, fecha_cambio, hora_inicio, hora_fin } = req.body;
+  const { horario_clase, aula_nueva } = req.body;
 
-  const query = 'INSERT INTO reservacion_cambio_salon (docente_id, aula_nueva, fecha_cambio, hora_inicio, hora_fin) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [docente_id, aula_nueva, fecha_cambio, hora_inicio, hora_fin], (err, result) => {
+  // Verificar que estos valores son correctos
+  console.log('Horario seleccionado:', horario_clase);
+  console.log('Aula nueva seleccionada:', aula_nueva);
+
+  // Obtener los detalles de la clase seleccionada
+  const getHorarioQuery = 'SELECT * FROM horarios_docente WHERE id_horario = ?';
+  db.query(getHorarioQuery, [horario_clase], (err, results) => {
     if (err) {
-      return res.status(500).send('Error al realizar el cambio');
+      console.error('Error al obtener el horario del docente:', err);
+      return res.status(500).send('Error al obtener el horario del docente');
     }
-    res.send('Cambio de salón realizado con éxito');
+
+    if (results.length === 0) {
+      return res.status(404).send('Horario no encontrado');
+    }
+
+    const horario = results[0]; // Obtener los datos del horario
+
+    // Inserción en la tabla 'reservacion_cambio_salon' (sin aula_antigua)
+    const insertQuery = `
+      INSERT INTO reservacion_cambio_salon (docente_id, fecha_cambio, aula_nueva, hora_inicio, hora_fin)
+      VALUES (?, CURDATE(), ?, ?, ?)
+    `;
+    db.query(insertQuery, [horario.docente_id, aula_nueva, horario.hora_inicio, horario.hora_fin], (err, result) => {
+      if (err) {
+        console.error('Error al insertar el cambio de salón:', err);
+        return res.status(500).send('Error al realizar el cambio');
+      }
+
+      console.log('Cambio de salón insertado correctamente');
+      res.send('Cambio de salón realizado con éxito');
+    });
   });
 });
 
