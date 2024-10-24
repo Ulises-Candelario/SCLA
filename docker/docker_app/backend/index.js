@@ -59,6 +59,11 @@ app.get('/register_docente', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/html/register_docente.html'));
 });
 
+// Ruta para servir el archivo de registro
+app.get('/mis_reservas', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/html/mis_reservas.html'));
+});
+
 // Ruta de registro de docentes (POST /register_docente)
 app.post('/register_docente', async (req, res) => {
   const { nombre, apellido, email, password } = req.body;
@@ -260,16 +265,73 @@ app.post('/login', (req, res) => {
 
 // Ruta de reserva para estudiantes (POST /reserva/estudiante)
 app.post('/reserva/estudiante', (req, res) => {
-  const { estudiante_id, aula_id, fecha_reserva, hora_inicio, hora_fin } = req.body;
+  const { aula_id, fecha_reserva, hora_inicio, hora_fin } = req.body;
+  const estudiante_id = req.session.userId; // Obtener el estudiante autenticado (según la sesión)
 
-  const query = 'INSERT INTO reservacion_estudiante (estudiante_id, aula_id, fecha_reserva, hora_inicio, hora_fin) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [estudiante_id, aula_id, fecha_reserva, hora_inicio, hora_fin], (err, result) => {
+  // Comprobar si el aula/laboratorio está disponible
+  const checkQuery = `
+    SELECT * FROM reservacion_estudiante 
+    WHERE aula_id = ? AND fecha_reserva = ? 
+    AND (hora_inicio < ? AND hora_fin > ?)
+  `;
+  db.query(checkQuery, [aula_id, fecha_reserva, hora_fin, hora_inicio], (err, results) => {
     if (err) {
-      return res.status(500).send('Error al realizar la reserva');
+      return res.status(500).send('Error al verificar la disponibilidad');
     }
-    res.send('Reserva realizada con éxito');
+    if (results.length > 0) {
+      return res.status(400).send('El aula/laboratorio no está disponible en este horario');
+    }
+
+    // Si está disponible, realizar la reserva
+    const insertQuery = `
+      INSERT INTO reservacion_estudiante (estudiante_id, aula_id, fecha_reserva, hora_inicio, hora_fin)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    db.query(insertQuery, [estudiante_id, aula_id, fecha_reserva, hora_inicio, hora_fin], (err, result) => {
+      if (err) {
+        console.error('Error al realizar la reserva:', err);
+        return res.status(500).send('Error al realizar la reserva');
+      }
+
+// Registrar en el historial de reservas
+const historialQuery = `
+  INSERT INTO historial_reservas (usuario_id, tipo_usuario, fecha_reserva)
+  VALUES (?, 'estudiante', ?)
+`;
+db.query(historialQuery, [estudiante_id, fecha_reserva], (err, result) => {
+  if (err) {
+    console.error('Error al guardar en el historial:', err);
+    return res.status(500).send('Error al guardar en el historial');
+  }
+  res.send('Reserva realizada con éxito');
+});
+    });
   });
 });
+
+// Ruta para verificar la disponibilidad de un aula/laboratorio
+app.get('/disponibilidad/:aula_id/:fecha_reserva/:hora_inicio/:hora_fin', (req, res) => {
+  const { aula_id, fecha_reserva, hora_inicio, hora_fin } = req.params;
+
+  const checkQuery = `
+    SELECT * FROM reservacion_estudiante 
+    WHERE aula_id = ? AND fecha_reserva = ?
+    AND (hora_inicio < ? AND hora_fin > ?)
+  `;
+  db.query(checkQuery, [aula_id, fecha_reserva, hora_fin, hora_inicio], (err, results) => {
+    if (err) {
+      console.error('Error al verificar la disponibilidad:', err);
+      return res.status(500).json({ error: 'Error al verificar la disponibilidad' });
+    }
+    if (results.length > 0) {
+      res.json({ disponible: false });
+    } else {
+      res.json({ disponible: true });
+    }
+  });
+});
+
+
 
 // Ruta de reserva para docentes (POST /reserva/docente)
 app.post('/reserva/docente', (req, res) => {
