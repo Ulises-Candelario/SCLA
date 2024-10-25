@@ -90,3 +90,6 @@ ALTER TABLE reservacion_cambio_salon
 ADD CONSTRAINT fk_docente_cambio_salon
 FOREIGN KEY (docente_id) REFERENCES usuarios_docente(id_docente)
 ON DELETE CASCADE;
+
+ALTER TABLE reservacion_cambio_salon
+DROP COLUMN aula_antigua;
