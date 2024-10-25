@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(response => response.json())  // Verificar que la respuesta es JSON
     .then(data => {
       data.forEach(reserva => {
-        const row = document.createElement('tr');
+        const row = document.createElement('tr');  
 
         // Columna de Número de Reserva
         const numReservaCell = document.createElement('td');
