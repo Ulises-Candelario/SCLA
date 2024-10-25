@@ -4,35 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registrar Horario del Docente</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>Registrar Horario del Docente</h2>
-  <form id="registerHorarioDocenteForm">
-    <label for="email">Correo Electrónico:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="dia_semana">Día de la Semana:</label>
-    <select id="dia_semana" name="dia_semana" required>
-      <option value="Lunes">Lunes</option>
-      <option value="Martes">Martes</option>
-      <option value="Miércoles">Miércoles</option>
-      <option value="Jueves">Jueves</option>
-      <option value="Viernes">Viernes</option>
-      <option value="Sábado">Sábado</option>
-    </select><br>
-
-    <label for="hora_inicio">Hora de Inicio:</label>
-    <input type="time" id="hora_inicio" name="hora_inicio" required><br>
-
-    <label for="hora_fin">Hora de Fin:</label>
-    <input type="time" id="hora_fin" name="hora_fin" required><br>
-
-    <label for="aula">Aula/Laboratorio:</label>
-    <input type="text" id="aula" name="aula" required><br>
-
-    <button type="submit">Registrar Horario</button>
-  </form>
+  <nav>
+    <img src="../assets//UdeC_DosLineasIzq_Blanco.png" alt="">
+  </nav>
+  <main>
+    <div class="form-section">
+      <h1>Sistema de Control de Laboratorios y Aulas</h1>
+      <h3>Registrar horario del docente</h3>
+      <form id="registerHorarioDocenteForm">
+        <label for="email">Correo Electrónico:</label>
+        <input type="email" id="email" name="email" required><br>
+    
+        <label for="dia_semana">Día de la Semana:</label>
+        <select id="dia_semana" name="dia_semana" required>
+          <option value="Lunes">Lunes</option>
+          <option value="Martes">Martes</option>
+          <option value="Miércoles">Miércoles</option>
+          <option value="Jueves">Jueves</option>
+          <option value="Viernes">Viernes</option>
+          <option value="Sábado">Sábado</option>
+        </select><br>
+    
+        <label for="hora_inicio">Hora de Inicio:</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required><br>
+    
+        <label for="hora_fin">Hora de Fin:</label>
+        <input type="time" id="hora_fin" name="hora_fin" required><br>
+    
+        <label for="aula">Aula/Laboratorio:</label>
+        <input type="text" id="aula" name="aula" required><br>
+    
+        <button type="submit">Registrar Horario</button>
+      </form>
+    </div>
+  </main>
 
   <script src="/js/register_horario_docente.js"></script>
 </body>

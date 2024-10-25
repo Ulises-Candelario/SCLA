@@ -4,20 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cambio de Salón (Docente)</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>Cambio de Salón (Docente)</h2>
-  
-  <form id="reservaDocenteForm">
-    <label for="horario_clase">Seleccionar Clase:</label>
-    <select id="horario_clase" name="horario_clase" required></select><br>
-  
-    <label for="aula_nueva">Nueva Aula/Laboratorio:</label>
-    <select id="aula_nueva" name="aula_nueva" required></select><br>
-  
-    <button type="submit">Cambiar Aula/Laboratorio</button>
-  </form>  
+  <nav>
+    <img src="../assets//UdeC_DosLineasIzq_Blanco.png" alt="">
+  </nav>
+  <main>
+    <div class="form-section">
+      <h1>Sistema de Control de Laboratorios y Aulas</h1>
+      <h3>Cambio de salón</h3>
+      <form id="reservaDocenteForm">
+        <label for="horario_clase">Seleccionar Clase:</label>
+        <select id="horario_clase" name="horario_clase" required></select><br>
+      
+        <label for="aula_nueva">Nueva Aula/Laboratorio:</label>
+        <select id="aula_nueva" name="aula_nueva" required></select><br>
+      
+        <button type="submit">Cambiar Aula/Laboratorio</button>
+      </form>  
+    </div>
+  </main>
 
   <script src="/js/reserva_docente.js"></script>
 </body>

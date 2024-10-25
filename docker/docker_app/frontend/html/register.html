@@ -4,19 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Estudiante</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>Registro de Estudiante</h2>
-  <form id="registerForm">
-    <input type="text" name="nombre" placeholder="Nombre" required><br>
-    <input type="text" name="apellido" placeholder="Apellido" required><br>
-    <input type="text" name="n_cuenta" placeholder="Número de cuenta" required><br>
-    <input type="email" name="email" placeholder="Correo Electrónico" required><br>
-    <input type="password" name="password" placeholder="Contraseña" required><br>
-    <button type="submit">Registrar</button>
-  </form>
-
+  <nav>
+    <img src="../assets//UdeC_DosLineasIzq_Blanco.png" alt="">
+  </nav>
+  <main>
+    <div class="form-section">
+      <h1>Sistema de Control de Laboratorios y Aulas</h1>
+      <h3>Registro</h3>
+      <form id="registerForm">
+        <input type="text" name="nombre" placeholder="Nombre" required><br>
+        <input type="text" name="apellido" placeholder="Apellido" required><br>
+        <input type="text" name="n_cuenta" placeholder="Número de cuenta" required><br>
+        <input type="email" name="email" placeholder="Correo Electrónico" required><br>
+        <input type="password" name="password" placeholder="Contraseña" required><br>
+        <button type="submit">Registrar</button>
+      </form>
+      <p>¿Ya tienes cuenta? <a href="./login.html">Inicia sesión</a></p>
+    </div>
+  </main>
+  
   <script src="/js/register.js"></script>
 </body>
 </html>

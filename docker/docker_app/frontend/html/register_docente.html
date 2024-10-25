@@ -4,26 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Docente</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
-  <h2>Registrar Docente</h2>
-  <form id="registerDocenteForm">
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" required><br>
+  <body>
+    <nav>
+      <img src="../assets//UdeC_DosLineasIzq_Blanco.png" alt="">
+    </nav>
+    <main>
+      <div class="form-section">
+        <h1>Sistema de Control de Laboratorios y Aulas</h1>
+        <h3>Registrar Docente</h3>
+        <form id="registerDocenteForm">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required><br>
+    
+          <label for="apellido">Apellido:</label>
+          <input type="text" id="apellido" name="apellido" required><br>
+    
+          <label for="email">Correo Electrónico:</label>
+          <input type="email" id="email" name="email" required><br>
+    
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" required><br>
+    
+          <button type="submit">Registrar</button>
+        </form>
 
-    <label for="apellido">Apellido:</label>
-    <input type="text" id="apellido" name="apellido" required><br>
+      </div>
+    </main>
 
-    <label for="email">Correo Electrónico:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="password">Contraseña:</label>
-    <input type="password" id="password" name="password" required><br>
-
-    <button type="submit">Registrar</button>
-  </form>
-
-  <script src="/js/register_docente.js"></script>
-</body>
+    <script src="/js/register_docente.js"></script>
+  </body>
 </html>

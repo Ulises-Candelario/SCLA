@@ -4,28 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reservar Aula/Laboratorio (Estudiante)</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-  <h2>Reservar Aula/Laboratorio</h2>
+  <nav>
+    <img src="../assets//UdeC_DosLineasIzq_Blanco.png" alt="">
+  </nav>
+  <main>
+    <div class="form-section">
+      <h1>Sistema de Control de Laboratorios y Aulas</h1>
+      <h3>Reserva de aula/laboratorio</h3>
+      <form id="reservaEstudianteForm">
+        <label for="aula_id">Seleccionar Aula/Laboratorio:</label>
+        <select id="aula_id" name="aula_id" required></select><br>
+    
+        <label for="fecha_reserva">Fecha de Reserva:</label>
+        <input type="date" id="fecha_reserva" name="fecha_reserva" required><br>
+    
+        <label for="hora_inicio">Hora de Inicio:</label>
+        <input type="time" id="hora_inicio" name="hora_inicio" required><br>
+    
+        <label for="hora_fin">Hora de Fin:</label>
+        <input type="time" id="hora_fin" name="hora_fin" required><br>
+    
+        <p id="horario_disponible"></p>
+    
+        <button type="submit">Reservar Aula/Laboratorio</button>
+      </form>
 
-  <form id="reservaEstudianteForm">
-    <label for="aula_id">Seleccionar Aula/Laboratorio:</label>
-    <select id="aula_id" name="aula_id" required></select><br>
-
-    <label for="fecha_reserva">Fecha de Reserva:</label>
-    <input type="date" id="fecha_reserva" name="fecha_reserva" required><br>
-
-    <label for="hora_inicio">Hora de Inicio:</label>
-    <input type="time" id="hora_inicio" name="hora_inicio" required><br>
-
-    <label for="hora_fin">Hora de Fin:</label>
-    <input type="time" id="hora_fin" name="hora_fin" required><br>
-
-    <p id="horario_disponible"></p>
-
-    <button type="submit">Reservar Aula/Laboratorio</button>
-  </form>
+    </div>
+  </main>
 
   <script src="/js/reserva_estudiante.js"></script>
 </body>
