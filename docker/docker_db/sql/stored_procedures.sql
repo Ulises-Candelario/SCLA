@@ -18,3 +18,21 @@ BEGIN
 END;
 //
 DELIMITER ;
+
+-- Store procedure que devuelve la cantidad de veces que un salon fue reservado en un rango de fechas , recibe parametro el aula y las fechas
+
+DELIMITER $$
+
+CREATE PROCEDURE ConteoReservasAulaPorFechas(
+    IN p_aula_id INT,
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE
+)
+BEGIN
+    SELECT COUNT(*) AS total_reservas
+    FROM reservacion_estudiante
+    WHERE aula_id = p_aula_id
+    AND fecha_reserva BETWEEN p_fecha_inicio AND p_fecha_fin;
+END $$
+
+DELIMITER ;
